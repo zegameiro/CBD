@@ -1,0 +1,52 @@
+Service System
+
+Add a new request
+Insert username: laura
+Insert product: board
+Insert quantity of the product: 3
+  Request from laura (product: board, quantity: 3) accepted with success
+
+
+Add a new request
+Insert username: laura
+Insert product: pens  
+Insert quantity of the product: 9
+  Request from laura (product: pens, quantity: 9) accepted with success
+
+
+Add a new request
+Insert username: laura
+Insert product: shoes
+Insert quantity of the product: 10
+  The request from laura with the product shoes (quant: 10) has been rejected cause it reached the max quantity of products 15
+
+Add a new request
+Insert username: laura
+Insert product: cookies
+Insert quantity of the product: 3
+  Request from laura (product: cookies, quantity: 3) accepted with success
+
+
+Add a new request
+Insert username: matt    
+Insert product: drum sticks
+Insert quantity of the product: 10
+  Request from matt (product: drum sticks, quantity: 10) accepted with success
+
+
+Add a new request
+Insert username: matt
+Insert product: microfones
+Insert quantity of the product: 6
+  The request from matt with the product microfones (quant: 6) has been rejected cause it reached the max quantity of products 15
+
+Add a new request
+Insert username: laura
+Insert product: diamonds
+Insert quantity of the product: 4
+  Request from laura (product: diamonds, quantity: 4) accepted with success
+
+
+Add a new request
+Insert username: 
+Ending the program...

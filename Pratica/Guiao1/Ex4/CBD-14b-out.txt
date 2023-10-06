@@ -1,0 +1,36 @@
+Search for ('Enter' for quit):maria
+maria (Score: 5640.0)
+mariana (Score: 1152.0)
+mariam (Score: 4.0)
+mariama (Score: 2.0)
+mariano (Score: 2.0)
+marialuísa (Score: 1.0)
+marianna (Score: 1.0)
+mariame (Score: 1.0)
+mariah (Score: 1.0)
+
+Search for ('Enter' for quit):jose
+josefina (Score: 2.0)
+joseph (Score: 2.0)
+josefa (Score: 2.0)
+joseane (Score: 1.0)
+josefhi (Score: 1.0)
+joseline (Score: 1.0)
+joselina (Score: 1.0)
+josemar (Score: 1.0)
+josemara (Score: 1.0)
+
+Search for ('Enter' for quit):adria
+adriana (Score: 68.0)
+adriano (Score: 12.0)
+adrian (Score: 7.0)
+adriane (Score: 1.0)
+
+Search for ('Enter' for quit):carl
+carlota (Score: 367.0)
+carlos (Score: 135.0)
+carla (Score: 24.0)
+carlene (Score: 1.0)
+carlize (Score: 1.0)
+carlotta (Score: 1.0)
+carlo (Score: 1.0)

@@ -1,0 +1,18 @@
+RPUSH mylist "Hello"
+RPUSH mylist "World"
+RPUSH mylist "!"
+LLEN mylist
+LPOS mylist "World"
+LSET mylist -1 "?"
+LINDEX mylist 0
+
+HSET myhash field1 "C" field2 "B" field3 "D"
+HGET myhash field1
+HGET myhash field2
+HGET myhash field3
+HKEYS myhash
+HVALS myhash
+HGETALL myhash
+HSTRLEN myhash field1
+HEXISTS myhash field1
+HEXISTS myhash field4

@@ -1,0 +1,33 @@
+set first key
+acl users
+get key
+get first
+append first val
+get first
+strlen first
+mget first
+set second CBD
+mget
+mget firts
+mget first
+mget second
+keys *
+sadd
+sadd el1 C
+sadd el2 B
+sadd el3 D
+scard
+scard el1
+smembers
+smembers el1
+spop el1
+smembers el1
+spop el2
+spop el3
+smembers el2
+sadd el1 ola
+sadd el1 bye
+smembers el1
+sadd el1 ola
+smembers el1
+srandmember el1

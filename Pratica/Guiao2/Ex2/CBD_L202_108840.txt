@@ -1,0 +1,1093 @@
+// NMEC: 108840
+
+// 1. Liste todos os documentos da coleção.
+db.restaurants.find()
+// 3772
+
+
+// 2. Apresente os campos restaurant_id, nome, localidade e gastronomia para todos os documentos da coleção
+db.restaurants.find({},{_id:0,restaurant_id:1, nome:1, localidade:1, gastronomia:1})
+[
+    ...,
+    {
+        _id: ObjectId("651e98290328bb4fecf477d1"),
+        localidade: 'Queens',
+        gastronomia: 'Delicatessen',
+        nome: "Sal'S Deli",
+        restaurant_id: '40361618'
+    },
+    {
+        _id: ObjectId("651e98290328bb4fecf477d2"),
+        localidade: 'Manhattan',
+        gastronomia: 'Delicatessen',
+        nome: "Bully'S Deli",
+        restaurant_id: '40361708'
+    }
+]
+// 3772
+
+
+// 3. Apresente os campos restaurant_id, nome, localidade e código postal (zipcode), mas exclua o campo _id de todos os documentos da coleção.
+db.restaurants.find({}, { _id: 0, restaurant_id: 1, nome: 1, localidade: 1, address: { zipcode: 1 } })
+[
+    ...,
+    {
+        address: { zipcode: '10021' },
+        localidade: 'Manhattan',
+        nome: 'Glorious Food',
+        restaurant_id: '40361521'
+    },
+    {
+        address: { zipcode: '11356' },
+        localidade: 'Queens',
+        nome: "Sal'S Deli",
+        restaurant_id: '40361618'
+    },
+    {
+        address: { zipcode: '10003' },
+        localidade: 'Manhattan',
+        nome: "Bully'S Deli",
+        restaurant_id: '40361708'
+    }
+]
+// 3772
+
+// 4. Indique o total de restaurantes localizados no Bronx.
+db.restaurants.find({localidade: "Bronx"}).count()
+// 309
+
+
+// 5. Apresente os primeiros 15 restaurantes localizados no Bronx, ordenados por ordem crescente de nome.
+db.restaurants.find({ localidade: "Bronx" }).limit(15).sort({ nome: 1 })
+[
+    {
+        _id: ObjectId("651e98290328bb4fecf47bf5"),
+        address: {
+        building: '29',
+        coord: [ -73.86119219999999, 40.8338023 ],
+        rua: 'Hugh Grant Circle',
+        zipcode: '10462'
+        },
+        localidade: 'Bronx',
+        gastronomia: 'Bakery',
+        grades: [
+        {
+            date: ISODate("2014-08-27T00:00:00.000Z"),
+            grade: 'A',
+            score: 9
+        },
+        {
+            date: ISODate("2013-09-10T00:00:00.000Z"),
+            grade: 'A',
+            score: 0
+        },
+        {
+            date: ISODate("2013-05-07T00:00:00.000Z"),
+            grade: 'C',
+            score: 2
+        },
+        {
+            date: ISODate("2013-03-23T00:00:00.000Z"),
+            grade: 'P',
+            score: 13
+        },
+        {
+            date: ISODate("2012-10-24T00:00:00.000Z"),
+            grade: 'A',
+            score: 12
+        },
+        {
+            date: ISODate("2011-11-01T00:00:00.000Z"),
+            grade: 'A',
+            score: 13
+        }
+        ],
+        nome: "Zaro'S Bread Basket",
+        restaurant_id: '40397863'
+    },
+    {
+        _id: ObjectId("651e98290328bb4fecf48002"),
+        address: {
+        building: '292',
+        coord: [ -73.9218923, 40.8169858 ],
+        rua: 'East  149 Street',
+        zipcode: '10451'
+        },
+        localidade: 'Bronx',
+        gastronomia: 'Pizza/Italian',
+        grades: [
+        {
+            date: ISODate("2014-10-06T00:00:00.000Z"),
+            grade: 'A',
+            score: 7
+        },
+        {
+            date: ISODate("2014-05-20T00:00:00.000Z"),
+            grade: 'A',
+            score: 13
+        },
+        {
+            date: ISODate("2013-03-25T00:00:00.000Z"),
+            grade: 'A',
+            score: 12
+        },
+        {
+            date: ISODate("2012-09-20T00:00:00.000Z"),
+            grade: 'A',
+            score: 11
+        }
+        ],
+        nome: 'Yolanda Pizzeria Restaurant',
+        restaurant_id: '40594879'
+    },
+    ...
+]
+// 15
+
+
+// 6. Liste todos os restaurantes que tenham pelo menos um score superior a 85.
+db.restaurants.find({ "grades.score": { $gte: 85 } } )
+// ou
+db.restaurants.find({ "grades": { $elemMatch: { "score": { $gte: 85 } } } })
+[
+  {
+    _id: ObjectId("651e98290328bb4fecf4791e"),
+    address: {
+      building: '65',
+      coord: [ -73.9782725, 40.7624022 ],
+      rua: 'West   54 Street',
+      zipcode: '10019'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'American',
+    grades: [
+      {
+        date: ISODate("2014-08-22T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2014-03-28T00:00:00.000Z"),
+        grade: 'C',
+        score: 131
+      },
+      {
+        date: ISODate("2013-09-25T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2013-04-08T00:00:00.000Z"),
+        grade: 'B',
+        score: 25
+      },
+      {
+        date: ISODate("2012-10-15T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2011-10-19T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      }
+    ],
+    nome: "Murals On 54/Randolphs'S",
+    restaurant_id: '40372466'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf479bf"),
+    address: {
+      building: '345',
+      coord: [ -73.9864626, 40.7266739 ],
+      rua: 'East 6 Street',
+      zipcode: '10003'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'Indian',
+    grades: [
+      {
+        date: ISODate("2014-09-15T00:00:00.000Z"),
+        grade: 'A',
+        score: 5
+      },
+      {
+        date: ISODate("2014-01-14T00:00:00.000Z"),
+        grade: 'A',
+        score: 8
+      },
+      {
+        date: ISODate("2013-05-30T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-04-24T00:00:00.000Z"),
+        grade: 'P',
+        score: 2
+      },
+      {
+        date: ISODate("2012-10-01T00:00:00.000Z"),
+        grade: 'A',
+        score: 9
+      },
+      {
+        date: ISODate("2012-04-06T00:00:00.000Z"),
+        grade: 'C',
+        score: 92
+      },
+      {
+        date: ISODate("2011-11-03T00:00:00.000Z"),
+        grade: 'C',
+        score: 41
+      }
+    ],
+    nome: 'Gandhi',
+    restaurant_id: '40381295'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf47b1d"),
+    address: {
+      building: '130',
+      coord: [ -73.984758, 40.7457939 ],
+      rua: 'Madison Avenue',
+      zipcode: '10016'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'Pizza/Italian',
+    grades: [
+      {
+        date: ISODate("2014-12-24T00:00:00.000Z"),
+        grade: 'Z',
+        score: 31
+      },
+      {
+        date: ISODate("2014-06-17T00:00:00.000Z"),
+        grade: 'C',
+        score: 98
+      },
+      {
+        date: ISODate("2013-12-12T00:00:00.000Z"),
+        grade: 'C',
+        score: 32
+      },
+      {
+        date: ISODate("2013-05-22T00:00:00.000Z"),
+        grade: 'B',
+        score: 21
+      },
+      {
+        date: ISODate("2012-05-02T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      }
+    ],
+    nome: 'Bella Napoli',
+    restaurant_id: '40393488'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf48388"),
+    address: {
+      building: '',
+      coord: [ -74.0163793, 40.7167671 ],
+      rua: 'Hudson River',
+      zipcode: '10282'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'American',
+    grades: [
+      {
+        date: ISODate("2014-06-27T00:00:00.000Z"),
+        grade: 'C',
+        score: 89
+      },
+      {
+        date: ISODate("2013-06-06T00:00:00.000Z"),
+        grade: 'A',
+        score: 6
+      },
+      {
+        date: ISODate("2012-06-19T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      }
+    ],
+    nome: 'West 79Th Street Boat Basin Cafe',
+    restaurant_id: '40756344'
+  }
+]
+// 4
+
+
+// 7. Encontre os restaurantes que obtiveram uma ou mais pontuações (score) entre [80 e 100].
+db.restaurants.find({ "grades": { $elemMatch: { "score": { $gte: 80, $lte: 100 } } } })
+[
+  {
+    _id: ObjectId("651e98290328bb4fecf479bf"),
+    address: {
+      building: '345',
+      coord: [ -73.9864626, 40.7266739 ],
+      rua: 'East 6 Street',
+      zipcode: '10003'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'Indian',
+    grades: [
+      {
+        date: ISODate("2014-09-15T00:00:00.000Z"),
+        grade: 'A',
+        score: 5
+      },
+      {
+        date: ISODate("2014-01-14T00:00:00.000Z"),
+        grade: 'A',
+        score: 8
+      },
+      {
+        date: ISODate("2013-05-30T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-04-24T00:00:00.000Z"),
+        grade: 'P',
+        score: 2
+      },
+      {
+        date: ISODate("2012-10-01T00:00:00.000Z"),
+        grade: 'A',
+        score: 9
+      },
+      {
+        date: ISODate("2012-04-06T00:00:00.000Z"),
+        grade: 'C',
+        score: 92
+      },
+      {
+        date: ISODate("2011-11-03T00:00:00.000Z"),
+        grade: 'C',
+        score: 41
+      }
+    ],
+    nome: 'Gandhi',
+    restaurant_id: '40381295'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf47b1d"),
+    address: {
+      building: '130',
+      coord: [ -73.984758, 40.7457939 ],
+      rua: 'Madison Avenue',
+      zipcode: '10016'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'Pizza/Italian',
+    grades: [
+      {
+        date: ISODate("2014-12-24T00:00:00.000Z"),
+        grade: 'Z',
+        score: 31
+      },
+      {
+        date: ISODate("2014-06-17T00:00:00.000Z"),
+        grade: 'C',
+        score: 98
+      },
+      {
+        date: ISODate("2013-12-12T00:00:00.000Z"),
+        grade: 'C',
+        score: 32
+      },
+      {
+        date: ISODate("2013-05-22T00:00:00.000Z"),
+        grade: 'B',
+        score: 21
+      },
+      {
+        date: ISODate("2012-05-02T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      }
+    ],
+    nome: 'Bella Napoli',
+    restaurant_id: '40393488'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf48219"),
+    address: {
+      building: '243',
+      coord: [ -73.9889479, 40.7568894 ],
+      rua: 'West   42 Street',
+      zipcode: '10036'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'American',
+    grades: [
+      {
+        date: ISODate("2014-10-31T00:00:00.000Z"),
+        grade: 'A',
+        score: 9
+      },
+      {
+        date: ISODate("2014-05-16T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2013-11-19T00:00:00.000Z"),
+        grade: 'A',
+        score: 5
+      },
+      {
+        date: ISODate("2013-03-25T00:00:00.000Z"),
+        grade: 'B',
+        score: 19
+      },
+      {
+        date: ISODate("2012-09-05T00:00:00.000Z"),
+        grade: 'B',
+        score: 26
+      },
+      {
+        date: ISODate("2012-04-10T00:00:00.000Z"),
+        grade: 'C',
+        score: 49
+      },
+      {
+        date: ISODate("2011-11-21T00:00:00.000Z"),
+        grade: 'C',
+        score: 80
+      }
+    ],
+    nome: 'B.B. Kings',
+    restaurant_id: '40704853'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf48388"),
+    address: {
+      building: '',
+      coord: [ -74.0163793, 40.7167671 ],
+      rua: 'Hudson River',
+      zipcode: '10282'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'American',
+    grades: [
+      {
+        date: ISODate("2014-06-27T00:00:00.000Z"),
+        grade: 'C',
+        score: 89
+      },
+      {
+        date: ISODate("2013-06-06T00:00:00.000Z"),
+        grade: 'A',
+        score: 6
+      },
+      {
+        date: ISODate("2012-06-19T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      }
+    ],
+    nome: 'West 79Th Street Boat Basin Cafe',
+    restaurant_id: '40756344'
+  }
+]
+// 4
+
+
+// 8. Indique os restaurantes com latitude inferior a -95,7.
+db.restaurants.find({ "address.coord.0": {$lt: -95.7} })
+[
+  {
+    _id: ObjectId("651e98290328bb4fecf47e1a"),
+    address: {
+      building: '3707',
+      coord: [ -101.8945214, 33.5197474 ],
+      rua: '82 Street',
+      zipcode: '11372'
+    },
+    localidade: 'Queens',
+    gastronomia: 'American',
+    grades: [
+      {
+        date: ISODate("2014-06-04T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-11-07T00:00:00.000Z"),
+        grade: 'B',
+        score: 19
+      },
+      {
+        date: ISODate("2013-05-17T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2012-08-29T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2012-04-03T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2011-11-16T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      }
+    ],
+    nome: 'Burger King',
+    restaurant_id: '40534067'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf48171"),
+    address: {
+      building: '15259',
+      coord: [ -119.6368672, 36.2504996 ],
+      rua: '10 Avenue',
+      zipcode: '11357'
+    },
+    localidade: 'Queens',
+    gastronomia: 'Italian',
+    grades: [
+      {
+        date: ISODate("2014-09-04T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2014-03-26T00:00:00.000Z"),
+        grade: 'A',
+        score: 8
+      },
+      {
+        date: ISODate("2013-03-04T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      },
+      {
+        date: ISODate("2012-09-27T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      },
+      {
+        date: ISODate("2012-04-20T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      },
+      {
+        date: ISODate("2011-11-23T00:00:00.000Z"),
+        grade: 'C',
+        score: 34
+      }
+    ],
+    nome: "Cascarino'S",
+    restaurant_id: '40668681'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf4864b"),
+    address: {
+      building: '60',
+      coord: [ -111.9975205, 42.0970258 ],
+      rua: 'West Side Highway',
+      zipcode: '10006'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'Japanese',
+    grades: [
+      {
+        date: ISODate("2014-03-20T00:00:00.000Z"),
+        grade: 'A',
+        score: 9
+      },
+      {
+        date: ISODate("2013-06-28T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2012-07-05T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      },
+      {
+        date: ISODate("2011-07-27T00:00:00.000Z"),
+        grade: 'A',
+        score: 2
+      }
+    ],
+    nome: 'Sports Center At Chelsea Piers (Sushi Bar)',
+    restaurant_id: '40882356'
+  }
+]
+// 3
+
+
+// 9. Indique os restaurantes que não têm gastronomia "American", tiveram uma (ou mais) pontuação superior a 70 e estão numa latitude inferior a -65.
+db.restaurants.find({ gastronomia: {$ne: "American"}, "grades.score": {$gt:70}, "address.coord.0": {$lt: -65}})
+[
+  {
+    _id: ObjectId("651e98290328bb4fecf479bf"),
+    address: {
+      building: '345',
+      coord: [ -73.9864626, 40.7266739 ],
+      rua: 'East 6 Street',
+      zipcode: '10003'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'Indian',
+    grades: [
+      {
+        date: ISODate("2014-09-15T00:00:00.000Z"),
+        grade: 'A',
+        score: 5
+      },
+      {
+        date: ISODate("2014-01-14T00:00:00.000Z"),
+        grade: 'A',
+        score: 8
+      },
+      {
+        date: ISODate("2013-05-30T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-04-24T00:00:00.000Z"),
+        grade: 'P',
+        score: 2
+      },
+      {
+        date: ISODate("2012-10-01T00:00:00.000Z"),
+        grade: 'A',
+        score: 9
+      },
+      {
+        date: ISODate("2012-04-06T00:00:00.000Z"),
+        grade: 'C',
+        score: 92
+      },
+      {
+        date: ISODate("2011-11-03T00:00:00.000Z"),
+        grade: 'C',
+        score: 41
+      }
+    ],
+    nome: 'Gandhi',
+    restaurant_id: '40381295'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf47b1d"),
+    address: {
+      building: '130',
+      coord: [ -73.984758, 40.7457939 ],
+      rua: 'Madison Avenue',
+      zipcode: '10016'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'Pizza/Italian',
+    grades: [
+      {
+        date: ISODate("2014-12-24T00:00:00.000Z"),
+        grade: 'Z',
+        score: 31
+      },
+      {
+        date: ISODate("2014-06-17T00:00:00.000Z"),
+        grade: 'C',
+        score: 98
+      },
+      {
+        date: ISODate("2013-12-12T00:00:00.000Z"),
+        grade: 'C',
+        score: 32
+      },
+      {
+        date: ISODate("2013-05-22T00:00:00.000Z"),
+        grade: 'B',
+        score: 21
+      },
+      {
+        date: ISODate("2012-05-02T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      }
+    ],
+    nome: 'Bella Napoli',
+    restaurant_id: '40393488'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf47b2a"),
+    address: {
+      building: '101',
+      coord: [ -73.9243061, 40.8276297 ],
+      rua: 'East 161 Street',
+      zipcode: '10451'
+    },
+    localidade: 'Bronx',
+    gastronomia: 'Latin (Cuban, Dominican, Puerto Rican, South & Central American)',
+    grades: [
+      {
+        date: ISODate("2014-04-10T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      },
+      {
+        date: ISODate("2013-10-01T00:00:00.000Z"),
+        grade: 'A',
+        score: 6
+      },
+      {
+        date: ISODate("2013-04-11T00:00:00.000Z"),
+        grade: 'B',
+        score: 25
+      },
+      {
+        date: ISODate("2012-10-25T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2012-10-10T00:00:00.000Z"),
+        grade: 'P',
+        score: 12
+      },
+      {
+        date: ISODate("2012-05-25T00:00:00.000Z"),
+        grade: 'B',
+        score: 14
+      },
+      {
+        date: ISODate("2011-09-14T00:00:00.000Z"),
+        grade: 'B',
+        score: 26
+      },
+      {
+        date: ISODate("2011-04-25T00:00:00.000Z"),
+        grade: 'C',
+        score: 76
+      }
+    ],
+    nome: 'El Molino Rojo Restaurant',
+    restaurant_id: '40393688'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf47c7e"),
+    address: {
+      building: '289',
+      coord: [ -73.94610279999999, 40.7137587 ],
+      rua: 'Manhattan Avenue',
+      zipcode: '11211'
+    },
+    localidade: 'Brooklyn',
+    gastronomia: 'Bakery',
+    grades: [
+      {
+        date: ISODate("2014-03-19T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      },
+      {
+        date: ISODate("2013-10-10T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      },
+      {
+        date: ISODate("2013-05-07T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      },
+      {
+        date: ISODate("2012-09-11T00:00:00.000Z"),
+        grade: 'B',
+        score: 18
+      },
+      {
+        date: ISODate("2012-04-18T00:00:00.000Z"),
+        grade: 'A',
+        score: 9
+      },
+      {
+        date: ISODate("2011-09-27T00:00:00.000Z"),
+        grade: 'A',
+        score: 8
+      },
+      {
+        date: ISODate("2011-05-03T00:00:00.000Z"),
+        grade: 'C',
+        score: 77
+      }
+    ],
+    nome: 'Fortunato Bros Cafe & Bakery',
+    restaurant_id: '40400561'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf482a4"),
+    address: {
+      building: '231',
+      coord: [ -73.9772294, 40.7527262 ],
+      rua: 'Grand Central Station',
+      zipcode: '10017'
+    },
+    localidade: 'Manhattan',
+    gastronomia: 'Italian',
+    grades: [
+      {
+        date: ISODate("2015-01-07T00:00:00.000Z"),
+        grade: 'Z',
+        score: 20
+      },
+      {
+        date: ISODate("2014-07-03T00:00:00.000Z"),
+        grade: 'B',
+        score: 14
+      },
+      {
+        date: ISODate("2013-12-21T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      },
+      {
+        date: ISODate("2013-05-17T00:00:00.000Z"),
+        grade: 'C',
+        score: 76
+      },
+      {
+        date: ISODate("2012-04-20T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      }
+    ],
+    nome: 'Two Boots Grand Central',
+    restaurant_id: '40725591'
+  }
+]
+// 5
+
+
+// 10. Liste o restaurant_id, o nome, a localidade e gastronomia dos restaurantes cujo nome começam por "Wil".
+db.restaurants.find( { nome: /^Wil/ }, { restaurant_id: 1, nome: 1, localidade: 1, gastronomia: 1 } )
+[
+  {
+    _id: ObjectId("651e98290328bb4fecf477c6"),
+    localidade: 'Bronx',
+    gastronomia: 'American',
+    nome: 'Wild Asia',
+    restaurant_id: '40357217'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf477c7"),
+    localidade: 'Brooklyn',
+    gastronomia: 'Delicatessen',
+    nome: "Wilken'S Fine Food",
+    restaurant_id: '40356483'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf485cc"),
+    localidade: 'Bronx',
+    gastronomia: 'Pizza',
+    nome: 'Wilbel Pizza',
+    restaurant_id: '40871979'
+  }
+]
+// 3
+
+// 11. Liste o nome, a localidade e a gastronomia dos restaurantes que pertencem ao Bronx e cuja gastronomia é do tipo "American" ou "Chinese".
+db.restaurants.find( {$or:[ {gastronomia:"American"},{gastronomia:"Chinese"} ]}, { _id:0, nome: 1, localidade: 1, gastronomia: 1 } )
+[
+  {
+    localidade: 'Brooklyn',
+    gastronomia: 'American',
+    nome: 'Riviera Caterer'
+  },
+  {
+    localidade: 'Queens',
+    gastronomia: 'American',
+    nome: 'Brunos On The Boulevard'
+  },
+  ...,
+  {
+    localidade: 'Brooklyn',
+    gastronomia: 'Chinese',
+    nome: 'May May Kitchen'
+  },
+  ...
+]
+// 1370
+
+
+// 12. Liste o restaurant_id, o nome, a localidade e a gastronomia dos restaurantes localizados em "Staten Island", "Queens", ou "Brooklyn".
+db.restaurants.find( {$or:[ {localidade:"Staten Island"},{localidade:"Queens"}, {localidade:"Brooklyn"}]}, { _id:0,restaurant_id: 1,nome: 1, localidade: 1, gastronomia: 1 } )
+[
+  ...,
+  {
+    localidade: 'Brooklyn',
+    gastronomia: 'Donuts',
+    nome: "Dunkin' Donuts",
+    restaurant_id: '40363098'
+  },
+  ...,
+  {
+    localidade: 'Staten Island',
+    gastronomia: 'Delicatessen',
+    nome: 'Bagels N Buns',
+    restaurant_id: '40363427'
+  },
+  ...,
+  {
+    localidade: 'Queens',
+    gastronomia: 'American',
+    nome: 'Snack Time Grill',
+    restaurant_id: '40363590'
+  }
+]
+// 1580
+
+// 13. Liste o nome, a localidade, o score e gastronomia dos restaurantes que alcançaram sempre pontuações inferiores ou igual a 3.
+
+[
+  {
+    localidade: 'Brooklyn',
+    gastronomia: 'Hamburgers',
+    grades: [ { score: 2 }, { score: 3 }, { score: 0 } ],
+    nome: 'White Castle'
+  },
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'Café/Coffee/Tea',
+    grades: [ { score: 2 }, { score: 2 }, { score: 2 }, { score: 2 } ],
+    nome: 'Cafe Madison'
+  },
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'American',
+    grades: [ { score: 0 }, { score: 3 }, { score: 2 } ],
+    nome: 'Citibank Executive Conference Center'
+  },
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'American',
+    grades: [ { score: 3 }, { score: 2 }, { score: 2 }, { score: 0 } ],
+    nome: 'Kenyon & Kenyon Cafeteria'
+  },
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'American',
+    grades: [ { score: 2 }, { score: 0 } ],
+    nome: 'Gold Bar B'
+  },
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'American',
+    grades: [ { score: 0 }, { score: 0 }, { score: 2 } ],
+    nome: 'Circle In The Square Theatre'
+  },
+  {
+    localidade: 'Brooklyn',
+    gastronomia: 'American',
+    grades: [ { score: 3 } ],
+    nome: 'Stand # 210'
+  }
+]
+// 7
+
+// 14. Liste o nome e as avaliações dos restaurantes que obtiveram uma avaliação com um grade "A", um score 10 na data "2014-08-11T00: 00: 00Z" (ISODATE).
+db.restaurants.find( { "grades": { $elemMatch: { "grade": "A", "score": 10, "date": ISODate("2014-08-11T00:00:00Z") } } }, { "_id": 0, "nome": 1, "grades": 1 } ).count()
+[
+  ...,
+  {
+    grades: [
+      {
+        date: ISODate("2014-08-11T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      },
+      {
+        date: ISODate("2013-08-28T00:00:00.000Z"),
+        grade: 'A',
+        score: 9
+      },
+      {
+        date: ISODate("2012-09-05T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      },
+      {
+        date: ISODate("2011-08-25T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      }
+    ],
+    nome: "Jojo'S Pizza"
+  }
+]
+// 6
+
+
+// 15. Liste o restaurant_id, o nome e os score dos restaurantes nos quais a segunda avaliação foi grade "A" e ocorreu em ISODATE "2014-08-11T00: 00: 00Z".
+db.restaurants.find( { "grades.1.grade": "A", "grades.1.date": ISODate("2014-08-11T00:00:00Z") }, { "restaurant_id": 1, "nome": 1, "grades.score": 1 } )
+[
+  {
+    _id: ObjectId("651e98290328bb4fecf47df3"),
+    grades: [
+      { score: 10 },
+      { score: 9 },
+      { score: 13 },
+      { score: 10 },
+      { score: 11 }
+    ],
+    nome: 'Club Macanudo (Cigar Bar)',
+    restaurant_id: '40526406'
+  },
+  {
+    _id: ObjectId("651e98290328bb4fecf48083"),
+    grades: [
+      { score: 9 },
+      { score: 10 },
+      { score: 22 },
+      { score: 5 },
+      { score: 11 }
+    ],
+    nome: "Gene'S Coffee Shop",
+    restaurant_id: '40614916'
+  }
+]
+// 2
+
+
+// 16. Liste o restaurant_id, o nome, o endereço (address) e as coordenadas geográficas (coord) dos restaurantes onde o 2º elemento da matriz de coordenadas tem um valor superior a 42 e inferior ou igual a 52.
+
+
+// 17. Liste nome, gastronomia e localidade de todos os restaurantes ordenando por ordem crescente da gastronomia e, em segundo, por ordem decrescente de localidade.
+
+
+// 18. Liste nome, localidade, grade e gastronomia de todos os restaurantes localizados em Brooklyn que não incluem gastronomia "American" e obtiveram uma classificação (grade) "A". Deve apresentá-los por ordem decrescente de gastronomia.
+
+
+// 19. Indique o número total de avaliações (numGrades) na coleção.
+
+
+// 20. Apresente o nome e número de avaliações (numGrades) dos 3 restaurante com mais avaliações.
+
+
+// 21. Apresente o número total de avaliações (numGrades) em cada dia da semana.
+
+
+// 22. Conte o total de restaurante existentes em cada localidade.
+
+
+// 23. Indique os restaurantes que têm gastronomia "Portuguese", o somatório de score é superior a 50 e estão numa latitude inferior a -60.
+
+
+// 24. Apresente o número de gastronomias diferentes na rua "Fifth Avenue"
+
+
+// 25. Apresente o nome e o score médio (avgScore) e número de avaliações (numGrades) dos restaurantes com score médio superior a 30 desde 1-Jan-2014.
+
+
+// 26. .. 30. Descreva 5 perguntas adicionais à base dados (alíneas 26 a 30), significativamente distintas das anteriores, e apresente igualmente a solução de pesquisa para cada questão.

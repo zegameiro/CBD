@@ -1,0 +1,54 @@
+
+// The limit is 2
+// The time slot is 120000 miliseconds (2 min)
+
+Service System
+
+Add a new request
+Input username: david
+Input product: banana
+  Request from david (product: banana) accepted with success
+
+
+Add a new request
+Input username: david
+Input product: fork
+  Request from david (product: fork) accepted with success
+
+
+Add a new request
+Input username: david
+Input product: peanuts
+  The request from david with the product peanuts has been rejected cause it passed the limit of products 2
+
+Add a new request
+Input username: john
+Input product: knife
+  Request from john (product: knife) accepted with success
+
+
+Add a new request
+Input username: john
+Input product: cat
+  Request from john (product: cat) accepted with success
+
+
+Add a new request
+Input username: john
+Input product: pig
+  The request from john with the product pig has been rejected cause it passed the limit of products 2
+
+Add a new request
+Input username: david
+Input product: bag
+  The request from david with the product bag has been rejected cause it passed the limit of products 2
+
+Add a new request
+Input username: david
+Input product: pie 
+  Request from david (product: pie) accepted with success
+
+
+Add a new request
+Input username: 
+Ending the program...
