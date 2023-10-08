@@ -1215,21 +1215,242 @@ db.restaurants.aggregate([ { $project: { numGrades: { $size: "$grades" } } }, { 
 
 
 // 20. Apresente o nome e número de avaliações (numGrades) dos 3 restaurante com mais avaliações.
+db.restaurants.aggregate([ { $project: {"_id":0, "nome": 1, numGrades: { $size: "$grades" } } }, { $sort: { numGrades: -1 } }, { $limit: 3 }] )
+[
+  { nome: 'Bronx Grill', numGrades: 8 },
+  { nome: 'Blue Bay Restaurant', numGrades: 8 },
+  { nome: 'Ho Mei Restaurant', numGrades: 8 }
+]
 
 
 // 21. Apresente o número total de avaliações (numGrades) em cada dia da semana.
+db.collection.aggregate([
+  { $unwind: "$grades" },
+  { $project: { dayOfWeek: { $dayOfWeek: "$grades.date" } } },
+  { $group: { _id: "$dayOfWeek", totalGrades: { $sum: 1 } } },
+  {
+    $project: {
+      _id: 0,
+      dayOfWeek: {
+        $switch: {
+          branches: [
+            { case: { $eq: ["$_id", 1] }, then: "Sunday" },
+            { case: { $eq: ["$_id", 2] }, then: "Monday" },
+            { case: { $eq: ["$_id", 3] }, then: "Tuesday" },
+            { case: { $eq: ["$_id", 4] }, then: "Wednesday" },
+            { case: { $eq: ["$_id", 5] }, then: "Thursday" },
+            { case: { $eq: ["$_id", 6] }, then: "Friday" },
+            { case: { $eq: ["$_id", 7] }, then: "Saturday" }
+          ],
+          default: "Unknown"
+        }
+      },
+      totalGrades: 1
+    }
+  }
+])
+
+[
+  { totalGrades: 3186, dayOfWeek: 'Monday' },
+  { totalGrades: 3984, dayOfWeek: 'Thursday' },
+  { totalGrades: 529, dayOfWeek: 'Saturday' },
+  { totalGrades: 7, dayOfWeek: 'Sunday' },
+  { totalGrades: 3878, dayOfWeek: 'Tuesday' },
+  { totalGrades: 4118, dayOfWeek: 'Wednesday' },
+  { totalGrades: 2440, dayOfWeek: 'Friday' }
+]
 
 
 // 22. Conte o total de restaurante existentes em cada localidade.
+db.restaurants.aggregate(
+  [ 
+    { $group: { _id: "$localidade", totalRestaurants: { $sum: 1 } } },
+    { $project: { _id: 0, localidade: "$_id", totalRestaurants: 1 } }
+  ] 
+)
+
+[
+  { totalRestaurants: 309, localidade: 'Bronx' },
+  { totalRestaurants: 684, localidade: 'Brooklyn' },
+  { totalRestaurants: 158, localidade: 'Staten Island' },
+  { totalRestaurants: 1883, localidade: 'Manhattan' },
+  { totalRestaurants: 738, localidade: 'Queens' }
+]
 
 
 // 23. Indique os restaurantes que têm gastronomia "Portuguese", o somatório de score é superior a 50 e estão numa latitude inferior a -60.
+db.restaurants.aggregate([
+  { $match: { gastronomia: "Portuguese", "address.coord.0": { $lt: -60 } } },
+  { $unwind: "$grades" },
+  { $group: { 
+    _id: "$_id", 
+    nome: { $first: "$nome" },
+    gastronomia: { $first: "$gastronomia" }, 
+    totalScore: { $sum: "$grades.score" } }
+  },
+  { $match: { totalScore: { $gt: 50 } } },
+  { $project: { "_id": 0, "nome": 1, "gastronomia": 1, "totalScore": 1}}
+])
+[
+  { 
+    nome: 'Pao',
+    gastronomia: 'Portuguese', 
+    totalScore: 80 },
+  {
+    nome: 'Mateus Restaurant',
+    gastronomia: 'Portuguese',
+    totalScore: 67
+  }
+]
 
 
 // 24. Apresente o número de gastronomias diferentes na rua "Fifth Avenue"
+db.restaurants.aggregate([
+ { $match: { "address.rua": "Fifth Avenue" } },
+ { $group: { _id: "$gastronomia" } },
+ { $group: { _id: null, totalGastr: {$sum: 1} } },
+ { $project: { _id: 0, totalGastr: 1 } }
+])
+[ { totalGastr: 4 } ]
 
 
 // 25. Apresente o nome e o score médio (avgScore) e número de avaliações (numGrades) dos restaurantes com score médio superior a 30 desde 1-Jan-2014.
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $match: { "grades.date": { $gte: ISODate("2014-01-01") } } },
+  { $group: { _id: "$_id", nome: { $first: "$nome" }, avgScore: { $avg: "$grades.score" }, numGrades: { $sum: 1 } } },
+  { $match: { avgScore: { $gt: 30 } } },
+  { $project: { _id: 0, nome: 1, avgScore: 1, numGrades: 1 } }
+])
+[
+  { nome: 'Cafe Lalo', avgScore: 50, numGrades: 1 },
+  { nome: 'Planet Sushi', avgScore: 44, numGrades: 1 },
+  { nome: 'Harmonie Club', avgScore: 50, numGrades: 1 },
+  { nome: 'Tequilla Sunrise', avgScore: 32, numGrades: 2 },
+  { nome: 'Italian Village Restaurant Pizzeria', avgScore: 34, numGrades: 2 },
+  { nome: 'Bella Napoli', avgScore: 64.5, numGrades: 2 },
+  { nome: 'Times Deli & Cafe', avgScore: 34.5, numGrades: 2 },
+  { nome: 'Sharaku Japanese Restaurant', avgScore: 31, numGrades: 2 },
+  { nome: 'Acqua', avgScore: 33.333333333333336, numGrades: 3 },
+  { nome: 'Europa Cafe', avgScore: 32.5, numGrades: 2 },
+  { nome: 'Cafe Gitane', avgScore: 33, numGrades: 1 },
+  { nome: 'Pho Bang Restaurant', avgScore: 36.5, numGrades: 2 },
+  {
+    nome: 'Miyagi Japanese Home Cooking',
+    avgScore: 32.5,
+    numGrades: 2
+  },
+  {
+    nome: 'West 79Th Street Boat Basin Cafe',
+    avgScore: 89,
+    numGrades: 1
+  },
+  { nome: 'Mesivta Eitz Chaim', avgScore: 36, numGrades: 1 },
+  { nome: 'La Palapa', avgScore: 44, numGrades: 1 },
+  { nome: 'Wu Liang Ye Restaurant', avgScore: 31.5, numGrades: 2 },
+  { nome: "Murals On 54/Randolphs'S", avgScore: 71, numGrades: 2 },
+  {
+    nome: 'Good Enough To Eat (A.G. Bistro)',
+    avgScore: 30.5,
+    numGrades: 2
+  },
+  {
+    nome: "Michelle'S Cocktail Lounge",
+    avgScore: 30.333333333333332,
+    numGrades: 3
+  }
+]
 
 
 // 26. .. 30. Descreva 5 perguntas adicionais à base dados (alíneas 26 a 30), significativamente distintas das anteriores, e apresente igualmente a solução de pesquisa para cada questão.
+
+// 26. Indique qual o restaurante que obteve a maior pontuação média(avgScore) nas suas avaliações.
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $group: { _id: "$_id", nome: { $first: "$nome" }, avgScore: { $avg: "$grades.score" } } },
+  { $sort: { avgScore: -1 } },
+  { $limit: 1 },
+  { $project: { _id: 0, nome: 1, avgScore: 1 } }
+])
+[ { nome: 'Bella Napoli', avgScore: 38.6 } ]
+
+
+
+// 27. Indique o maior número de avaliações que um restaurante teve.
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $group: { _id: "$_id", totalAvaliacoes: { $sum: 1 } } },
+  { $sort: { totalAvaliacoes: -1 } },
+  { $limit: 1 },
+  { $project: { _id: 0, totalAvaliacoes: 1} }
+])
+[ { totalAvaliacoes: 8 } ]
+
+
+// 28. Indique para cada tipo de gastronomia o número de restaurantes que a utiliza e ordenado por ordem decrescente.
+db.restaurants.aggregate([
+  { $group: { _id: "$gastronomia", total: { $sum: 1 } } },
+  { $sort: { total: -1 } },
+  { $project: { _id: 1, total: 1 } }
+])
+[
+  { _id: 'American', total: 1255 },
+  { _id: 'Italian', total: 325 },
+  { _id: 'Pizza', total: 270 },
+  { _id: 'Café/Coffee/Tea', total: 180 },
+  { _id: 'Hamburgers', total: 159 },
+  { _id: 'Bakery', total: 127 },
+  { _id: 'Latin (Cuban, Dominican, Puerto Rican, South & Central American)', total: 115 },
+  { _id: 'Chinese', total: 115 },
+  { _id: 'Pizza/Italian', total: 106 },
+  { _id: 'Japanese', total: 80 },
+  { _id: 'Irish', total: 79 },
+  { _id: 'Delicatessen', total: 78 },
+  { _id: 'Caribbean', total: 75 },
+  { _id: 'Mexican', total: 73 },
+  { _id: 'French', total: 72 },
+  { _id: 'Jewish/Kosher', total: 60 },
+  { _id: 'Indian', total: 43 },
+  { _id: 'Donuts', total: 43 },
+  { _id: 'Spanish', total: 42 },
+  { _id: 'Seafood', total: 35 }
+]
+
+
+// 29. Indique o nome, o restaurant_id, a localidade, a gastronomia e as grades que tiveram apartir de 1 de dezembro de 2014, que se localizam em Bronx e com gastronomia Seafood
+db.restaurants.aggregate([
+  { $match: { "localidade": "Bronx", gastronomia: "Seafood", "grades.date": { $gte: ISODate("2014-12-01T00:00:00Z") } } },
+  { $project: { _id: 0, nome: 1, restaurant_id: 1, localidade: "$localidade", gastronomia: 1,
+      grades: { $filter: { input: "$grades", as: "grade", cond: { $gte: ["$$grade.date", ISODate("2014-12-01T00:00:00Z")] } } }
+    }
+  }
+])
+[
+  {
+    gastronomia: 'Seafood',
+    nome: 'Seashore Restaurant',
+    restaurant_id: '40369299',
+    localidade: 'Bronx',
+    grades: [
+      {
+        date: ISODate("2014-12-11T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      }
+    ]
+  }
+]
+
+
+// 30. Indique para cada localidade o número de restaurantes que tem como gastronomia Caribbean, ordenado por ordem crescente
+db.restaurants.aggregate([
+  { $match: { gastronomia: "Caribbean" } },
+  { $group: { _id: "$localidade", count: { $sum: 1 } } },
+  { $sort: { count: 1 }}
+])
+[
+  { _id: 'Manhattan', count: 6 },
+  { _id: 'Bronx', count: 12 },
+  { _id: 'Queens', count: 19 },
+  { _id: 'Brooklyn', count: 38 }
+]
