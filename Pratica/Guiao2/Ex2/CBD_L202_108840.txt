@@ -1061,15 +1061,157 @@ db.restaurants.find( { "grades.1.grade": "A", "grades.1.date": ISODate("2014-08-
 
 
 // 16. Liste o restaurant_id, o nome, o endereço (address) e as coordenadas geográficas (coord) dos restaurantes onde o 2º elemento da matriz de coordenadas tem um valor superior a 42 e inferior ou igual a 52.
+db.restaurants.find({ $and: [ { "address.coord.1": { $gt: 42 } }, { "address.coord.1": { $lte: 52 } }] }, { "_id": 0, "restaurant_id": 1, "nome": 1, "address": 1 })
+[
+  {
+    address: {
+      building: '47',
+      coord: [ -78.877224, 42.89546199999999 ],
+      rua: 'Broadway @ Trinity Pl',
+      zipcode: '10006'
+    },
+    nome: "T.G.I. Friday'S",
+    restaurant_id: '40387990'
+  },
+  {
+    address: {
+      building: '1',
+      coord: [ -0.7119979, 51.6514664 ],
+      rua: 'Pennplaza E, Penn Sta',
+      zipcode: '10001'
+    },
+    nome: 'T.G.I. Fridays',
+    restaurant_id: '40388936'
+  },
+  {
+    address: {
+      building: '3000',
+      coord: [ -87.86567699999999, 42.61150920000001 ],
+      rua: '47 Avenue',
+      zipcode: '11101'
+    },
+    nome: "Di Luvio'S Deli",
+    restaurant_id: '40402284'
+  },
+  {
+    address: {
+      building: '21972199',
+      coord: [ -78.589606, 42.8912372 ],
+      rua: 'Broadway',
+      zipcode: '10024'
+    },
+    nome: 'La Caridad 78',
+    restaurant_id: '40568285'
+  },
+  {
+    address: {
+      building: '7981',
+      coord: [ -84.9751215, 45.4713351 ],
+      rua: 'Hoyt Street',
+      zipcode: '11201'
+    },
+    nome: "Bijan'S",
+    restaurant_id: '40876618'
+  },
+  {
+    address: {
+      building: '0',
+      coord: [ -88.0778799, 42.4154769 ],
+      rua: '& Grand Central',
+      zipcode: '10017'
+    },
+    nome: 'Hyatt, Ny Central/Room Service',
+    restaurant_id: '40879243'
+  },
+  {
+    address: {
+      building: '60',
+      coord: [ -111.9975205, 42.0970258 ],
+      rua: 'West Side Highway',
+      zipcode: '10006'
+    },
+    nome: 'Sports Center At Chelsea Piers (Sushi Bar)',
+    restaurant_id: '40882356'
+  }
+]
 
+// 7
 
 // 17. Liste nome, gastronomia e localidade de todos os restaurantes ordenando por ordem crescente da gastronomia e, em segundo, por ordem decrescente de localidade.
+db.restaurants.find({}, {_id:0, "nome": 1, "gastronomia": 1, "localidade": 1}).sort({"gastronomia": 1, "localidade":-1})
+[
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'Afghan',
+    nome: 'Afghan Kebab House'
+  },
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'Afghan',
+    nome: 'Khyber Pass'
+  },
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'Afghan',
+    nome: 'Afghan Kebab House #1'
+  },
+  {
+    localidade: 'Manhattan',
+    gastronomia: 'Afghan',
+    nome: 'Ariana Kebab House'
+  },
+  {
+    localidade: 'Queens',
+    gastronomia: 'African',
+    nome: 'Africana Restaurant'
+  },
+  ...,
+]
+// 3772
 
 
 // 18. Liste nome, localidade, grade e gastronomia de todos os restaurantes localizados em Brooklyn que não incluem gastronomia "American" e obtiveram uma classificação (grade) "A". Deve apresentá-los por ordem decrescente de gastronomia.
+db.restaurants.find({"localidade": "Brooklyn", "gastronomia": {$ne: "American"}, "grades.grade":"A"}, {_id:0, "nome": 1, "gastronomia": 1, "localidade": 1, "grades.grade": 1}).sort({"gastronomia": -1})
+[
+  {
+    localidade: 'Brooklyn',
+    gastronomia: 'Vegetarian',
+    grades: [
+      { grade: 'A' },
+      { grade: 'A' },
+      { grade: 'A' },
+      { grade: 'C' },
+      { grade: 'A' }
+    ],
+    nome: 'Strictly Vegetarian'
+  },
+  {
+    localidade: 'Brooklyn',
+    gastronomia: 'Vegetarian',
+    grades: [
+      { grade: 'A' },
+      { grade: 'A' },
+      { grade: 'A' },
+      { grade: 'A' },
+      { grade: 'A' },
+      { grade: 'C' }
+    ],
+    nome: 'Original Vegetarian Restaurant'
+  },
+  {
+    localidade: 'Brooklyn',
+    gastronomia: 'Vegetarian',
+    grades: [ { grade: 'A' }, { grade: 'A' }, { grade: 'A' } ],
+    nome: 'Bliss Bakery & Cafe'
+  },
+  ...
+]
+//493
 
 
 // 19. Indique o número total de avaliações (numGrades) na coleção.
+db.restaurants.aggregate([ { $project: { numGrades: { $size: "$grades" } } }, { $group: { _id: null, totalGrades: { $sum: "$numGrades" } } }, { $project: { _id: 0, totalGrades: 1 } }] )
+[ { totalGrades: 18142 } ]
 
 
 // 20. Apresente o nome e número de avaliações (numGrades) dos 3 restaurante com mais avaliações.
