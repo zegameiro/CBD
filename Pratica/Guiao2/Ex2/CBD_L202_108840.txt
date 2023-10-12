@@ -949,6 +949,7 @@ db.restaurants.find( {$or:[ {localidade:"Staten Island"},{localidade:"Queens"}, 
 // 1580
 
 // 13. Liste o nome, a localidade, o score e gastronomia dos restaurantes que alcançaram sempre pontuações inferiores ou igual a 3.
+db.restaurants.find({"grades.score":{$not:{$gt:3}}},{"_id":0,"nome":1, "localidade":1, "grades.score":1, "gastronomia":1})
 
 [
   {
