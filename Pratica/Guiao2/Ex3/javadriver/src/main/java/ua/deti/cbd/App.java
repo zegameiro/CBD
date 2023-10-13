@@ -75,7 +75,64 @@ public class App
 
         System.out.println("b) ----------------------------");
 
-        
+        System.out.println("Test index (ascending) for localidade");
+        Document doc3 = new Document("localidade", "Bronx");
+
+        // Test search time without index for localidade
+        long start_time1 = System.nanoTime();
+        searchElement(collection, doc3);
+        long end_time1 = System.nanoTime();
+        long total_time1 = end_time1 - start_time1;
+        System.out.println("    Execution time (without index for localidade): " + total_time1);
+
+        createIndex(collection, "localidade");
+
+        // Test search time with index for localidade
+        long start_time2 = System.nanoTime();
+        searchElement(collection, doc3);
+        long end_time2 = System.nanoTime();
+        long total_time2 = end_time2 - start_time2;
+        System.out.println("    Execution time (with index for localidade): " + total_time2);
+
+
+        System.out.println("Test index (ascending) for gastronomia");
+        Document doc4 = new Document().append("gastronomia", "Chinese");
+
+         // Test search time without index for gastronomia
+        long start_time3 = System.nanoTime();
+        searchElement(collection, doc4);
+        long end_time3 = System.nanoTime();
+        long total_time3 = end_time3 - start_time3;
+        System.out.println("    Execution time (without index for gastronomia): " + total_time3 + "\n");
+
+        createIndex(collection, "gastronomia");
+
+        // Test search time with index for gastronomia
+        long start_time4 = System.nanoTime();
+        searchElement(collection, doc3);
+        long end_time4 = System.nanoTime();
+        long total_time4 = end_time4 - start_time4;
+        System.out.println("    Execution time (with index for gastronomia): " + total_time4 + "\n");
+
+
+        System.out.println("Test index (text) for nome");
+        Document doc5 = new Document().append("nome", "The Movable Feast");
+
+         // Test search time without index for nome
+        long start_time5 = System.nanoTime();
+        searchElement(collection, doc5);
+        long end_time5 = System.nanoTime();
+        long total_time5 = end_time5 - start_time5;
+        System.out.println("    Execution time (without index for nome): " + total_time5 + "\n");
+
+        createNomeIndex(collection);
+
+        // Test search time with index for nome
+        long start_time6 = System.nanoTime();
+        searchElement(collection, doc5);
+        long end_time6 = System.nanoTime();
+        long total_time6 = end_time6 - start_time6;
+        System.out.println("    Execution time (with index for nome): " + total_time6 + "\n");
     }
 
     public static void addElement(MongoCollection<Document> col, Document doc) {
@@ -110,8 +167,13 @@ public class App
         }
     }
 
-    public static void createLocIndex(MongoCollection<Document> col, String field) {
+    public static void createIndex(MongoCollection<Document> col, String field) {
         String resultCreateIndex = col.createIndex(Indexes.ascending(field));
-        System.out.println(String.format("Index created: %s", resultCreateIndex));
+        System.out.println(String.format("Index created: %s \n", resultCreateIndex));
+    }
+
+    public static void createNomeIndex(MongoCollection<Document> col) {
+        String resultCreateIndex = col.createIndex(Indexes.text("nome"));
+        System.out.println(String.format("Index created: %s \n", resultCreateIndex));
     }
 }
