@@ -1,0 +1,72 @@
+// max 15 products for a timeslot of 12000 in milliseconds
+
+Service System
+
+Add a new request (press 'Enter' to exit)
+Insert username: kyle
+Insert product: spoon
+Insert quantity of the product: 12
+  Request from kyle (product: spoon, quantity: 12) accepted with success
+
+Add a new request (press 'Enter' to exit)
+Insert username: kyle
+Insert product: knife
+Insert quantity of the product: 3
+  Request from kyle (product: knife, quantity: 3) accepted with success
+
+Add a new request (press 'Enter' to exit)
+Insert username: kyle
+Insert product: fork
+Insert quantity of the product: 5
+  The request from kyle with the product fork (quant: 5) has been rejected cause it reached the max quantity of products 15
+
+Add a new request (press 'Enter' to exit)
+Insert username: maria
+Insert product: apple
+Insert quantity of the product: 10
+  Request from maria (product: apple, quantity: 10) accepted with success
+
+Add a new request (press 'Enter' to exit)
+Insert username: maria
+Insert product: pineapple
+Insert quantity of the product: 10
+  The request from maria with the product pineapple (quant: 10) has been rejected cause it reached the max quantity of products 15
+
+Add a new request (press 'Enter' to exit)
+Insert username: kyle
+Insert product: fork
+Insert quantity of the product: 15
+  Request from kyle (product: fork, quantity: 15) accepted with success
+
+Add a new request (press 'Enter' to exit)
+Insert username: maria
+Insert product: banana
+Insert quantity of the product: 9
+  Request from maria (product: banana, quantity: 9) accepted with success
+
+Add a new request (press 'Enter' to exit)
+Insert username: 
+Ending the program...
+
+// data in mongodb
+//  [
+//    {
+//      _id: ObjectId("652f18a08831d051cdfee0b7"),
+//      kyle: {
+//        prods: [
+//          { prod: 'spoon', timestamp: 1073230284, quantity: 12 },
+//          { prod: 'knife', timestamp: 1073236339, quantity: 3 },
+//          { prod: 'fork', timestamp: 1073275154, quantity: 15 }
+//        ]
+//      }
+//    },
+//    {
+//      _id: ObjectId("652f18b78831d051cdfee0b8"),
+//      maria: {
+//        prods: [
+//          { prod: 'apple', timestamp: 1073253518, quantity: 10 },
+//          { prod: 'banana', timestamp: 1073286666, quantity: 9 }
+//        ]
+//      }
+//    }
+//  ]

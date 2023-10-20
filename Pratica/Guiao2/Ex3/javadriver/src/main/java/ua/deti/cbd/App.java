@@ -1,7 +1,10 @@
 package ua.deti.cbd;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -245,7 +248,45 @@ public class App
         AggregateIterable<Document> result = collection.aggregate(pipeline);
 
         for (Document document : result)
-            System.out.println("    Total de Grades: " + document.getInteger("totalGrades"));
+            System.out.println("    Total de Grades: " + document.getInteger("totalGrades") + "\n");
+
+        // ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+        System.out.println("d) ----------------------------\n");
+
+
+        // ------------------------------------------------- Function countlocalidades -------------------------------------------------
+
+        System.out.println("Test function countLocalidades");
+        System.out.println("    Total number of localidades: " + countLocalidades(collection) + "\n");
+
+        // -----------------------------------------------------------------------------------------------------------------------------
+
+
+        // ------------------------------------------------- Function countRestByLocalidade -------------------------------------------------
+
+        System.out.println("Test function countRestByLocalidade");
+
+        Map<String, Integer> res = countRestByLocalidade(collection);
+        System.out.println("Numero de restaurantes por localidade:");
+
+        for(Map.Entry<String, Integer> entry : res.entrySet()) 
+            System.out.println(" -> " + entry.getKey() + " - " + entry.getValue());
+
+        System.out.println();
+
+        // ----------------------------------------------------------------------------------------------------------------------------------
+
+
+        // ------------------------------------------------- Function getRestWithNameCloserTo -------------------------------------------------
+
+        System.out.println("Test function getRestWithNameCloserTo");
+        String name = "Park";
+        List<String> names = getRestWithNameCloserTo(collection, name);
+        System.out.println("Nome de restaurantes contendo '" +  name + "' no nome: ");
+        for(String n : names) 
+            System.out.println(" -> " + n);
 
     }
 
@@ -290,4 +331,50 @@ public class App
         String resultCreateIndex = col.createIndex(Indexes.text("nome"));
         System.out.println(String.format("Index created: %s \n", resultCreateIndex));
     }
+
+    public static int countLocalidades(MongoCollection<Document> col) {
+        AggregateIterable<Document> query = col.aggregate(
+            Arrays.asList(
+                group("$localidade"),
+                group(null, Accumulators.sum("totalLocalidades", 1))
+            )
+        );
+
+        // Get the result of the query
+        Document result = query.first();
+
+        int totalLocalidades = result.getInteger("totalLocalidades");
+
+        return totalLocalidades;
+    }
+
+    public static Map<String, Integer> countRestByLocalidade(MongoCollection<Document> col) {
+        HashMap<String, Integer> result = new HashMap<String,Integer>();
+
+        AggregateIterable<Document> query = col.aggregate(
+            Arrays.asList(
+                group("$localidade", Accumulators.sum("totalRes", 1))
+            )
+        );
+
+        for(Document d : query) {
+            String localidade = d.getString("_id");
+            Integer totalR = d.getInteger("totalRes");
+            result.put(localidade, totalR);
+        }
+
+        return result;
+    }
+
+    public static List<String> getRestWithNameCloserTo(MongoCollection<Document> col, String name) {
+        ArrayList<String> names = new ArrayList<String>();
+        Document query = new Document("nome", new Document("$regex", ".*" + name + ".*"));
+        FindIterable<Document> results = col.find(query);
+
+        for(Document doc : results) 
+            names.add(doc.getString("nome"));
+        
+        return names;
+    }
 }
+
