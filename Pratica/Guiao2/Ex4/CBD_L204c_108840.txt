@@ -1,0 +1,48 @@
+Solução em redis:
+
+Para este exercício eu usei a estrutura de dados do Redis um sorted set, com a seguinte estrutura:
+user (nome de um utilizador usado como chave/key) : product (nome do produto guardado como valor/value) score: timestamp (*)
+
+* No Redis a estrutura de dados sorted set apresenta um campo que é o score, para este exercício guardei nele o valor do timestamp para depois
+facilitar na consulta dos produtos dentro do timeslot.
+
+Este apresenta como prós:
+- A rápida execução de processos de leitura ou de escrita de dados na memória;
+- Suporta tipos de dados complexos, como listas ou conjuntos, permitindo a implementação de métodos mais avançados
+- ótimo para aramazenar dados em tempo real e cache.
+
+No entanto também apresenta como contras:
+- Os dados são voláteis, ou seja podem ser perdidos caso ocorra uma falha no sistema;
+- Não é o ideal para armazenar dados persistentes a longo prazo;
+- Não oferece muitos métodos avançados para uma pesquisa;
+
+
+Solução em MongoDB:
+
+Já com o MongoDB eu utilizei a seguinte estrutura para armazenar os dados:
+users (a coleção criada):
+{
+    user (o nome de um utilizador): {
+        prods (um array com os vários produtos de um utilizador): [
+            {prod (o nome do produto): "...", timestamp (instante em que o pedido foi efetuado): "..." },
+            ...
+        ]
+    }
+}
+
+Esta solução apresenta os seguintes prós:
+- Consegue armazenar quantidades elevadas de dados de forma eficiente;
+- Suporta consultas complexas e indexação;
+- Oferece escalabilidade horizontal para puder lidar com cargas pesadas;
+
+Mas, apresenta como contras:
+- As operações de leitura ou escrita em tempo real demoram mais tempo, comparando com o Redis;
+- Requer mais recursos de hardware também em comparação com o Redis;
+- Não é ideal para armazenar dados em cache a tempo real.
+
+
+A melhor solução adequada a este problema seria o Redis visto que os dados armazenados eram armazenados em tempo real
+e as consultas também eram feitas em tempo real, os dados mais antigos também não seriam necessários, caso estes já tivessem passado o timeslot,
+pelo que se estes se perdem-se o sistema continuava a funcionar. Ou seja, ao utilizarmos o Redis para este exercício podemos afirmar que este irá ter uma
+melhor performance do que no MongoDB, no entanto, se quiséssemos saber todos os pedidos que tinham sido efetuados ao todo o MongoDB seria mais adequado
+visto que os consegue armazenar grandes quantidades de dados. 
