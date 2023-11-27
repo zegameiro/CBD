@@ -1,4 +1,4 @@
-package ua.deti.cbd;
+package com.example.Ex3;
 
 import java.util.ArrayList;
 import java.util.Arrays;
