@@ -11,40 +11,126 @@ RETURN n.name AS Actor_Name, m.title AS Movie_Title, m.released AS Movie_Release
 
 # 3. Encontre pares de nós com mais do que uma relação entre si.
 MATCH (n)-[r]->(m)
-WITH n, m, count(r) AS rel_count
-WHERE rel_count > 1 AND n > m
-RETURN n.name AS Node_Name, m.name AS Node_Name, rel_count AS Relationship_Count;
+WITH n, m, COUNT(r) AS rel_count
+WHERE rel_count > 1
+RETURN n, m, rel_count AS Relationship_Count;
 
 # 4. Encontre todos os pares de pessoas que fizeram revisões do mesmo filme. Apresente os seus nomes e título de cada filme.
+MATCH (p1:Person)-[:REVIEWED]->(m:Movie)<-[:REVIEWED]-(p2:Person)
+WHERE p1 > p2
+RETURN p1.name, p2.name, m.title;
 
 # 5. Encontre todos os pares de atores que atuaram em vários filmes juntos.
+MATCH (p1:Person)-[:ACTED_IN]->(m:Movie)<-[:ACTED_IN]-(p2:Person)
+WHERE p1 > p2
+RETURN p1.name, p2.name, m.title;
 
 # 6. Determine a idade média do elenco do filme "Apollo 13" no ano do lançamento do filme.
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie {title: 'Apollo 13'})
+RETURN AVG(m.released - p.born) AS Average_Age;
 
 # 7. Encontre os 10 filmes com o elenco mais velho no momento do lançamento do filme. Apresente o filme e a idade média arredondada a 2 casas decimais, por ordem decrescente.
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WITH m, AVG(m.released - p.born) AS average_age
+RETURN m.title, round(average_age, 2) AS average_age
+ORDER BY average_age DESC
+LIMIT 10;
 
 # 8. Apresente o subgrafo ACTED_IN do filme com o elenco mais novo, no momento do lançamento do filme.
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WITH m, AVG(m.released - p.born) AS average_age
+ORDER BY average_age ASC
+LIMIT 1
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+RETURN m, p;
 
 # 9. Qual é o caminho mais curto (usando qualquer tipo de relação) entre John Cusack e Demi Moore?
+MATCH path = shortestPath((p1:Person {name: 'John Cusack'})-[*]-(p2:Person {name: 'Demi Moore'}))
+RETURN path;
 
 # 10. Qual a dimensão caminho mais curto (usando qualquer tipo de relação) entre Keanu Reeves e Tom Cruise?
+MATCH path = shortestPath((p1:Person {name: 'Keanu Reeves'})-[*]-(p2:Person {name: 'Tom Cruise'}))
+RETURN length(path) AS path_dimension;
 
 # 11. Quais são as dimensões do caminho mais curto entre pessoas com nome Jim e pessoas com nome Kevin?
+MATCH path = shortestPath((p1:Person)-[*]-(p2:Person)) 
+WHERE p1.name CONTAINS "Jim" AND p2.name CONTAINS "Kevin" 
+WITH size(nodes(path)) AS path_dimension 
+ORDER BY path_dimension ASC 
+LIMIT 1
+RETURN path_dimension;
 
 # 12. Que pessoas têm uma distância 2 para Jim Cash (a distância entre duas pessoas é o comprimento do caminho mais curto entre eles)?
+MATCH path = shortestPath((p1:Person)-[*..2]-(p2:Person {name: "Jim Cash"})) 
+WHERE p1 <> p2
+RETURN p1.name;
 
 # 13. Qual é a maior distância de uma pessoa para Kevin Bacon?
+MATCH path = shortestPath((p1:Person)-[*]-(p2:Person {name: "Kevin Bacon"})) 
+WHERE p1 <> p2
+WITH COUNT(nodes(path)) AS distance
+ORDER BY distance DESC
+RETURN distance;
 
 # 14. Qual é a maior distância entre duas pessoas?
+MATCH path = shortestPath((p1:Person)-[*]-(p2:Person))
+WHERE p1 <> p2
+WITH COUNT(nodes(path)) AS max_distance
+ORDER BY max_distance DESC
+LIMIT 1
+RETURN max_distance;
 
 # 15. Qual é a distribuição de distâncias em pares (isto é, para a distância 1, 2, 3, ..., quantos pares de pessoas têm essa distância um do outro)?
+MATCH path = shortestPath((p1:Person)-[*]-(p2:Person))
+WHERE p1 <> p2
+RETURN length(path) AS distance, COUNT(*) AS number_of_pairs
+ORDER BY distance ASC;
 
 # 16. Indique as 10 pessoas com menor distância média em que o caminho entre elas são relações do tipo ACTED_IN.
+MATCH path = shortestPath((p1:Person)-[:ACTED_IN*]-(p2:Person)) 
+WHERE p1 <> p2
+UNWIND nodes(path) AS all_nodes
+WITH p1,path, COUNT(all_nodes) AS num_nodes 
+RETURN p1.name, AVG(num_nodes) AS avg_distance 
+ORDER BY avg_distance ASC 
+LIMIT 10;
 
 # 17. Apresente os atores que tiveram pelo menos uma role para personagens com o prefixo 'Dr.'. O resultado deve ser uma lista com o par “Ator, Lista das roles”.
+MATCH (p1:Person)-[actedIn:ACTED_IN]->(m:Movie)
+WITH p1, COLLECT(actedIn.roles) AS allRoles
+UNWIND allRoles AS all_roles
+WITH p1, all_roles
+WHERE ANY(role IN all_roles WHERE role STARTS WITH 'Dr.')
+RETURN p1.name AS Actor, COLLECT(DISTINCT all_roles) AS Roles;
 
-# 18.
+# 18. Apresente os atores que têm uma média de rating superior a 90 nos filmes que escreveram. Apresente o nome do autor e a média de rating ordenado por ordem crescente.
+MATCH (w:Person)-[:WROTE]->(m:Movie)<-[review:REVIEWED]-(r:Person)
+WITH w, AVG(review.rating) AS avgRating
+WHERE avgRating > 90
+RETURN w.name, avgRating
+ORDER BY avgRating ASC
 
-# 19.
+# 19. Encontre a média de rating dos filmes para cada ano em que foram lançados filmes, apresente o ano de lançamento e a média de rating.
+MATCH (p:Person)-[review:REVIEWED]->(m:Movie)
+WITH m.released AS year, review.rating AS movieRating
+RETURN year, AVG(movieRating) AS averageRating
+ORDER BY year
 
-# 20.
+
+# 20. Encontre a distância mínima entre um ator filme mais recente e de um ator mais antigo, apresentando os nomes dos autores e a distância máxima encontrada.
+MATCH (p1:Person)-[:ACTED_IN]->(oldest:Movie)
+WITH p1, COLLECT(oldest) AS oldestMovies
+ORDER BY oldestMovies[0].released ASC
+LIMIT 1
+
+MATCH (p2:Person)-[:ACTED_IN]->(newest:Movie)
+WITH p1, p2, COLLECT(newest) AS newestMovies, oldestMovies
+ORDER BY newestMovies[0].released DESC
+LIMIT 1
+
+UNWIND oldestMovies AS oldestMovie
+UNWIND newestMovies AS newestMovie
+
+MATCH p=shortestPath((p1)-[:ACTED_IN*]-(p2))
+WHERE p1 <> p2
+RETURN p1.name AS actor1, p2.name AS actor2, MIN(length(p)) AS minDistance
