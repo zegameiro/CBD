@@ -15,59 +15,59 @@ CREATE TABLE user (
 
 CREATE TABLE video (
     video_id uuid,
-    author_id uuid,
+    author text,
     name text,
     description text,
     duration int,
     tags set<text>,
     timestamp_upload_part timestamp,
 
-    PRIMARY KEY ((author_id), timestamp_upload_part)
+    PRIMARY KEY ((author), timestamp_upload_part)
 ) WITH CLUSTERING ORDER BY (timestamp_upload_part DESC);
 
 CREATE TABLE comment_author (
     comment_id uuid,
-    video_id uuid,
-    auth_comm_id uuid,
+    video text,
+    auth_comm text,
     comment text,
     timestamp_comment timestamp,
 
-    PRIMARY KEY (auth_comm_id, timestamp_comment)
+    PRIMARY KEY (auth_comm, timestamp_comment)
 ) WITH CLUSTERING ORDER BY (timestamp_comment DESC);
 
 CREATE TABLE comment_video (
     comment_id uuid,
-    video_id uuid,
-    auth_comm_id uuid,
+    video text,
+    auth_comm text,
     comment text,
     timestamp_comment timestamp,
 
-    PRIMARY KEY (video_id, timestamp_comment)
+    PRIMARY KEY (video, timestamp_comment)
 ) WITH CLUSTERING ORDER BY (timestamp_comment DESC);
 
 CREATE TABLE follower (
-    video_id uuid,
-    follower_id set<uuid>,
+    video text,
+    followers set<text>,
     
-    PRIMARY KEY (video_id)
+    PRIMARY KEY (video)
 );
 
 CREATE TABLE event (
-    user_id uuid,
-    video_id uuid,
+    user text,
+    video text,
     type text,
     moment int,
     timestamp_event timestamp,
 
-    PRIMARY KEY ((user_id, video_id), timestamp_event)
+    PRIMARY KEY ((user, video), timestamp_event)
 );
 
 CREATE TABLE rating_video (
     rating_id uuid,
-    video_id uuid,
+    video text,
     rating tinyint,
 
-    PRIMARY KEY (video_id, rating_id)
+    PRIMARY KEY (video, rating_id)
 );
 
 CREATE INDEX ON video(tags);

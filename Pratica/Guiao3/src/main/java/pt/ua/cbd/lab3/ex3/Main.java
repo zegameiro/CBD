@@ -15,46 +15,48 @@ public class Main {
             Row row = rs.one();
             System.out.println(row.getString("release_version") + '\n');                                    // (3)
 
-            // System.out.println("Insert new data in the Cassandra Data Base videotube");
+            System.out.println("---------------------------------------------------------- a) Insert, Update and search operations ----------------------------------------------------------");
 
-            // System.out.println("    Insert a new user");
-            // session.execute("INSERT INTO videotube.user (user_id, username, name, email, timestamp_regist) VALUES (00000000-0000-0000-0000-000000000021, 'ricfazeres', 'Ricardo Costa', 'ricardoc@ua.pt', toTimeStamp(now()));");
-            // System.out.println("    User inserted with success\n");
+            System.out.println("Insert new data in the Cassandra Data Base videotube");
 
-            // System.out.println("    ------------------------------------------------------------");
+            System.out.println("    Insert a new user");
+            session.execute("INSERT INTO videotube.user (user_id, username, name, email, timestamp_regist) VALUES (00000000-0000-0000-0000-000000000021, 'ricfazeres', 'Ricardo Costa', 'ricardoc@ua.pt', toTimeStamp(now()));");
+            System.out.println("    User inserted with success\n");
 
-            // System.out.println("    Insert a new video");
-            // session.execute("INSERT INTO videotube.video (video_id, author_id, name, description, duration, tags, timestamp_upload_part) VALUES (00000000-0000-0000-0023-000000000000, 00000000-0000-0000-0000-000000000021, 'How to build your own shelf', 'Build youre own shelf in 5 minutes it will blow your mind', 398402, {'furniture', 'tutorial'}, '2023-10-09 14:32:56.003400+0000');");
-            // System.out.println("    Video inserted with success\n");
+            System.out.println("    ------------------------------------------------------------");
 
-            // System.out.println("    ------------------------------------------------------------");
-            // System.out.println("    Insert a new rating");
-            // session.execute("INSERT INTO videotube.rating_video (rating_id, video_id, rating) VALUES (00000000-0012-0000-0000-000000000000, 00000000-0000-0000-0023-000000000000, 5);");
-            // System.out.println("    Rating inserted with success\n");
+            System.out.println("    Insert a new video");
+            session.execute("INSERT INTO videotube.video (video_id, author, name, description, duration, tags, timestamp_upload_part) VALUES (00000000-0000-0000-0023-000000000000, 'ricfazeres', 'How to build your own shelf', 'Build youre own shelf in 5 minutes it will blow your mind', 398402, {'furniture', 'tutorial'}, '2023-10-09 14:32:56.003400+0000');");
+            System.out.println("    Video inserted with success\n");
 
-            // System.out.println("--------------------------------------------------------------------------------------------\n");
+            System.out.println("    ------------------------------------------------------------");
+            System.out.println("    Insert a new rating");
+            session.execute("INSERT INTO videotube.rating_video (rating_id, video, rating) VALUES (00000000-0012-0000-0000-000000000000, 'How to build your own shelf', 5);");
+            System.out.println("    Rating inserted with success\n");
 
-            // System.out.println("Edition of a data stored in the Cassandra Data Base videotube");
+            System.out.println("--------------------------------------------------------------------------------------------\n");
 
-            // System.out.println("    Edit the name of a user:");
-            // session.execute("UPDATE videotube.user SET name = 'Ricard Costa Cinta', email = 'ricardoccinta@ua.pt' WHERE user_id = 00000000-0000-0000-0000-000000000021;");
-            // System.out.println("    User edited with success\n");
+            System.out.println("Edition of a data stored in the Cassandra Data Base videotube");
 
-            // System.out.println("    ------------------------------------------------------------");
+            System.out.println("    Edit the name of a user:");
+            session.execute("UPDATE videotube.user SET name = 'Ricard Costa Cinta', email = 'ricardoccinta@ua.pt' WHERE user_id = 00000000-0000-0000-0000-000000000021;");
+            System.out.println("    User edited with success\n");
 
-            // System.out.println("    Edit the name of a video:");
-            // session.execute("UPDATE videotube.video SET name = 'How to build your own shelf in 5 minutes', description = 'Build youre own shelf in 5 minutes it will blow your mind so badly' WHERE author_id = 00000000-0000-0000-0000-000000000021 AND timestamp_upload_part = '2023-10-09 14:32:56.003400+0000';");
-            // System.out.println("    Video edited with success\n");
+            System.out.println("    ------------------------------------------------------------");
 
-            // System.out.println("    ------------------------------------------------------------");
+            System.out.println("    Edit the name of a video:");
+            session.execute("UPDATE videotube.video SET name = 'How to build your own shelf in 5 minutes', description = 'Build youre own shelf in 5 minutes it will blow your mind so badly' WHERE author = 'ricfazeres' AND timestamp_upload_part = '2023-10-09 14:32:56.003400+0000';");
+            System.out.println("    Video edited with success\n");
 
-            // System.out.println("    Edit the rating of a video:");
-            // session.execute("UPDATE videotube.rating_video SET rating = 4 WHERE video_id = 00000000-0000-0000-0023-000000000000 AND rating_id = 00000000-0012-0000-0000-000000000000;");
-            // System.out.println("    Rating edited with success\n");
+            System.out.println("    ------------------------------------------------------------");
 
-            // System.out.println("--------------------------------------------------------------------------------------------\n");
+            System.out.println("    Edit the rating of a video:");
+            session.execute("UPDATE videotube.rating_video SET rating = 4 WHERE video = 'How to build your own shelf in 5 minutes' AND rating_id = 00000000-0012-0000-0000-000000000000;");
+            System.out.println("    Rating edited with success\n");
 
-            // System.out.println("Search for data stored in the Cassandra Data Base videotube");
+            System.out.println("--------------------------------------------------------------------------------------------\n");
+
+            System.out.println("Search for data stored in the Cassandra Data Base videotube");
 
             System.out.println("    Search for users:\n");
 
@@ -84,7 +86,7 @@ public class Main {
             int duration = 0;
             Set<String> tags = new HashSet<String>();
             
-            ResultSet searchResult2 = session.execute("SELECT * FROM videotube.video WHERE author_id = 00000000-0000-0000-0000-000000000020;");
+            ResultSet searchResult2 = session.execute("SELECT * FROM videotube.video WHERE author = 'ma';");
 
             for (Row rowSearch : searchResult2) {
                 videoName = rowSearch.getString("name");
@@ -101,8 +103,63 @@ public class Main {
 
             System.out.println("------------------------------------------------------------\n");
 
-             System.out.println("    Search for the commentaries of a user by descending order of the timestamp_comment:\n");
+            System.out.println("---------------------------------------------------------- b) QUERIES ----------------------------------------------------------\n");
 
+            System.out.println("Query 1 - Get the last 3 comments inputed in a video:\n");
+            ResultSet queryResult1 = session.execute("SELECT * FROM videotube.comment_video WHERE video = 'How to take care of your drumkit' LIMIT 3;");
+
+            for(Row comment : queryResult1) {
+                String video = comment.getString("video");
+                String auth_comm = comment.getString("auth_comm");
+                String comm = comment.getString("comment");
+
+                System.out.println("    Video: " + video);
+                System.out.println("    Author: " + auth_comm);
+                System.out.println("    Comment: " + comm);
+                System.out.println();
+            }
+
+            System.out.println("------------------------------------------------------------\n");
+
+            System.out.println("Query 2 - List the tags of a video:\n");
+
+            ResultSet queryResult2 = session.execute("SELECT name, tags FROM videotube.video WHERE author = 'jl' and timestamp_upload_part = '2023-11-29 01:07:32.121000+0000';");
+
+            for(Row tag : queryResult2) {
+                Set<String> tags2 = tag.getSet("tags", String.class);
+                System.out.println("    Video: " + tag.getString("name"));
+                System.out.println("    Tags: " + tags2);
+                System.out.println();
+            }
+
+            System.out.println("------------------------------------------------------------\n");
+
+            System.out.println("Query 4 - Get the last 5 events of a video made by a user\n");
+
+            ResultSet queryResult3 = session.execute("SELECT * FROM videotube.event WHERE user = 'ma' AND video = 'American Idiot' LIMIT 5;");
+
+            for(Row tag : queryResult3) {
+                System.out.println("    User: " + tag.getString("user"));
+                System.out.println("    Video: " + tag.getString("video"));
+                System.out.println("    Type: " + tag.getString("type"));
+                System.out.println("    Moment: " + tag.getInt("moment"));
+                System.out.println();
+            }
+
+            System.out.println("------------------------------------------------------------\n");
+            
+            System.out.println("Query 5 - Get the shared videos by a user (for example maria1987) in a period of time (for example August 2017)\n");
+
+            ResultSet queryResult4 = session.execute("SELECT * FROM videotube.video WHERE author = 'ma' AND timestamp_upload_part >= '2017-08-01 00:00:00.000000+0000';");
+
+            for(Row tag : queryResult4) {
+                System.out.println("    Author: " + tag.getString("author"));
+                System.out.println("    Name: " + tag.getString("name"));
+                System.out.println("    Description: " + tag.getString("description"));
+                System.out.println("    Duration: " + tag.getInt("duration"));
+                System.out.println("    Tags: " + tag.getSet("tags", String.class));
+                System.out.println();
+            }
         }
     }
 }
