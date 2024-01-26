@@ -9,7 +9,6 @@
 // Relacionamentos:
 //     - WORKS_ON ()
 //     - COMMITTED (num, role_on_project)
-//     - BELONGS ()
 
 
 // 0. Carregue o conteudo do ficheiro `/resouces/git_selection.csv`.
