@@ -20,7 +20,7 @@
 
 ## Informações 
 
-Encontra-se disponibilizados os slides das aulas teóricas, os guiões das aulas práticas e o código implementado para cada guião (poderá estar incompleto), bem como alguns enunciados de exames de anos anteriores.
+Encontra-se disponibilizados os slides das aulas teóricas, os guiões das aulas práticas e o código implementado para cada guião (poderá estar incompleto), bem como alguns enunciados de exames teóricos de anos anteriores.
 
 ## Guiões Práticos
 
